@@ -56,18 +56,7 @@
             font-size: 18px;
         }
 
-        .music-controls {
-            display: none;
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 3;
-        }
-
-        .toggle-menu {
+        .music-menu-toggle {
             position: fixed;
             top: 10px;
             left: 10px;
@@ -78,6 +67,18 @@
             background: none;
             border: none;
             outline: none;
+        }
+
+        .music-controls {
+            display: none;
+            position: fixed;
+            top: 50px;
+            left: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 3;
+            flex-direction: column;
         }
 
         .music-button {
@@ -172,7 +173,7 @@
     </style>
 </head>
 <body>
-    <button class="toggle-menu" onclick="toggleMenu()">📤</button>
+    <button class="music-menu-toggle" onclick="toggleMenu()">📤</button>
 
     <div class="music-controls" id="music-controls">
         <button class="music-button" onclick="previousTrack()">⏮️</button>
@@ -210,7 +211,7 @@
         const currentSong = document.getElementById("current-song");
         const progressBar = document.getElementById("progress-bar");
         const musicControls = document.getElementById("music-controls");
-        const toggleMenuButton = document.querySelector(".toggle-menu");
+        const toggleMenuButton = document.querySelector(".music-menu-toggle");
 
         music.src = tracks[currentTrackIndex];
         currentSong.textContent = tracks[currentTrackIndex];
