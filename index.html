@@ -61,6 +61,7 @@
             top: 10px;
             left: 10px;
             display: flex;
+            align-items: center;
             gap: 10px;
             z-index: 3;
         }
@@ -79,12 +80,28 @@
         }
 
         .current-song {
-            position: fixed;
-            top: 60px;
-            left: 10px;
             font-size: 16px;
             color: white;
+        }
+
+        .progress-bar-container {
+            position: fixed;
+            top: 50px;
+            left: 10px;
+            width: 200px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            overflow: hidden;
+            cursor: pointer;
             z-index: 3;
+        }
+
+        .progress-bar {
+            width: 0;
+            height: 100%;
+            background: white;
+            transition: width 0.1s linear;
         }
 
         .button-container {
@@ -114,34 +131,6 @@
             border: 5px solid;
             animation: rgb-sync 12s infinite linear;
             transition: background-color 0.3s ease;
-        }
-
-        .snowflake {
-            position: absolute;
-            top: -10px;
-            width: 5px;
-            height: 5px;
-            background-color: white;
-            border-radius: 50%;
-            opacity: 0.8;
-            animation: fall 10s linear infinite;
-        }
-
-        .snowflake:nth-child(odd) {
-            width: 7px;
-            height: 7px;
-            opacity: 0.6;
-        }
-
-        @keyframes fall {
-            0% {
-                transform: translateY(0) translateX(0);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh) translateX(50px);
-                opacity: 0;
-            }
         }
 
         @keyframes rgb-sync {
@@ -179,9 +168,12 @@
         <button class="music-button" onclick="previousTrack()">⏮️</button>
         <button class="music-button" onclick="toggleMusic()">▶️</button>
         <button class="music-button" onclick="nextTrack()">⏭️</button>
+        <span id="current-song" class="current-song">ojk.mp3</span>
     </div>
 
-    <div id="current-song" class="current-song">Текущая песня: ojk.mp3</div>
+    <div class="progress-bar-container" onclick="seekTrack(event)">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
 
     <audio id="music"></audio>
 
@@ -207,9 +199,12 @@
 
         const music = document.getElementById("music");
         const currentSong = document.getElementById("current-song");
+        const progressBar = document.getElementById("progress-bar");
 
         music.src = tracks[currentTrackIndex];
-        currentSong.textContent = `Текущая песня: ${tracks[currentTrackIndex]}`;
+        currentSong.textContent = tracks[currentTrackIndex];
+
+        music.addEventListener("timeupdate", updateProgressBar);
 
         function toggleMusic() {
             if (isPlaying) {
@@ -225,7 +220,7 @@
         function nextTrack() {
             currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
             music.src = tracks[currentTrackIndex];
-            currentSong.textContent = `Текущая песня: ${tracks[currentTrackIndex]}`;
+            currentSong.textContent = tracks[currentTrackIndex];
             isPlaying = false;
             toggleMusic();
         }
@@ -233,9 +228,22 @@
         function previousTrack() {
             currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
             music.src = tracks[currentTrackIndex];
-            currentSong.textContent = `Текущая песня: ${tracks[currentTrackIndex]}`;
+            currentSong.textContent = tracks[currentTrackIndex];
             isPlaying = false;
             toggleMusic();
+        }
+
+        function updateProgressBar() {
+            const progress = (music.currentTime / music.duration) * 100;
+            progressBar.style.width = progress + "%";
+        }
+
+        function seekTrack(event) {
+            const progressContainer = event.currentTarget;
+            const offsetX = event.offsetX;
+            const totalWidth = progressContainer.offsetWidth;
+            const percentage = offsetX / totalWidth;
+            music.currentTime = music.duration * percentage;
         }
 
         const snowContainer = document.getElementById('snow-container');
