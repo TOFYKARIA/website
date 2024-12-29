@@ -74,11 +74,15 @@
             position: fixed;
             top: 50px;
             left: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
             z-index: 3;
             flex-direction: column;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .music-buttons {
+            display: flex;
+            gap: 10px;
         }
 
         .music-button {
@@ -94,18 +98,16 @@
             transform: scale(1.2);
         }
 
-        .current-song {
-            font-size: 16px;
-            color: white;
-        }
-
         .progress-bar-container {
-            width: 200px;
+            width: 220px;
             height: 5px;
             background: rgba(255, 255, 255, 0.3);
             border-radius: 3px;
             overflow: hidden;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .progress-bar {
@@ -113,6 +115,17 @@
             height: 100%;
             background: white;
             transition: width 0.1s linear;
+        }
+
+        .time-info {
+            font-size: 12px;
+            color: white;
+        }
+
+        .current-song {
+            font-size: 16px;
+            color: white;
+            margin-bottom: 5px;
         }
 
         .button-container {
@@ -176,12 +189,16 @@
     <button class="music-menu-toggle" onclick="toggleMenu()">📤</button>
 
     <div class="music-controls" id="music-controls">
-        <button class="music-button" onclick="previousTrack()">⏮️</button>
-        <button class="music-button" onclick="toggleMusic()">▶️</button>
-        <button class="music-button" onclick="nextTrack()">⏭️</button>
-        <span id="current-song" class="current-song">ojk.mp3</span>
+        <div class="current-song" id="current-song">ojk.mp3</div>
+        <div class="music-buttons">
+            <button class="music-button" onclick="previousTrack()">⏮️</button>
+            <button class="music-button" onclick="toggleMusic()">▶️</button>
+            <button class="music-button" onclick="nextTrack()">⏭️</button>
+        </div>
         <div class="progress-bar-container" onclick="seekTrack(event)">
+            <span id="current-time" class="time-info">0:00</span>
             <div class="progress-bar" id="progress-bar"></div>
+            <span id="total-time" class="time-info">0:00</span>
         </div>
     </div>
 
@@ -212,11 +229,16 @@
         const progressBar = document.getElementById("progress-bar");
         const musicControls = document.getElementById("music-controls");
         const toggleMenuButton = document.querySelector(".music-menu-toggle");
+        const currentTime = document.getElementById("current-time");
+        const totalTime = document.getElementById("total-time");
 
         music.src = tracks[currentTrackIndex];
         currentSong.textContent = tracks[currentTrackIndex];
 
         music.addEventListener("timeupdate", updateProgressBar);
+        music.addEventListener("loadedmetadata", () => {
+            totalTime.textContent = formatTime(music.duration);
+        });
 
         function toggleMenu() {
             const isVisible = musicControls.style.display === "flex";
@@ -227,10 +249,10 @@
         function toggleMusic() {
             if (isPlaying) {
                 music.pause();
-                document.querySelector(".music-controls button:nth-child(2)").textContent = "▶️";
+                document.querySelector(".music-buttons button:nth-child(2)").textContent = "▶️";
             } else {
                 music.play();
-                document.querySelector(".music-controls button:nth-child(2)").textContent = "⏸️";
+                document.querySelector(".music-buttons button:nth-child(2)").textContent = "⏸️";
             }
             isPlaying = !isPlaying;
         }
@@ -254,6 +276,7 @@
         function updateProgressBar() {
             const progress = (music.currentTime / music.duration) * 100;
             progressBar.style.width = progress + "%";
+            currentTime.textContent = formatTime(music.currentTime);
         }
 
         function seekTrack(event) {
@@ -262,6 +285,12 @@
             const totalWidth = progressContainer.offsetWidth;
             const percentage = offsetX / totalWidth;
             music.currentTime = music.duration * percentage;
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
         }
     </script>
 </body>
