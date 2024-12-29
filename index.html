@@ -191,9 +191,48 @@
                 background: radial-gradient(circle, rgba(255, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
             }
         }
+
+        #snow-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            width: 5px;
+            height: 5px;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+
+        .snowflake:nth-child(odd) {
+            width: 7px;
+            height: 7px;
+            opacity: 0.6;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) translateX(50px);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
+    <div id="snow-container"></div>
     <button class="music-menu-toggle" onclick="toggleMenu()">📤</button>
 
     <div class="music-controls" id="music-controls">
@@ -304,6 +343,21 @@
             const secs = Math.floor(seconds % 60);
             return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
         }
+
+        const snowContainer = document.getElementById("snow-container");
+
+        function createSnowflakes() {
+            for (let i = 0; i < 50; i++) {
+                const snowflake = document.createElement("div");
+                snowflake.className = "snowflake";
+                snowflake.style.left = Math.random() * 100 + "vw";
+                snowflake.style.animationDuration = Math.random() * 5 + 5 + "s";
+                snowflake.style.animationDelay = Math.random() * 10 + "s";
+                snowContainer.appendChild(snowflake);
+            }
+        }
+
+        createSnowflakes();
     </script>
 </body>
 </html>
