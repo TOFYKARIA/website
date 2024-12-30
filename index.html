@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTOSAKA Bio</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: #000;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .container {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            width: 80%;
+            max-width: 500px;
+            margin-top: 40px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(15px);
+            border: 5px solid;
+            animation: rgb-sync 12s infinite linear, fadeIn 1.5s ease-in-out;
+            z-index: 2;
+            position: relative;
+            opacity: 0;
+            transform: scale(0.8);
+            animation-fill-mode: forwards;
+        }
+
+        .banner {
+            width: calc(100% - 40px);
+            height: auto;
+            border-radius: 15px;
+            margin: 20px;
+            border: 5px solid;
+            animation: rgb-sync 12s infinite linear, fadeIn 2s ease-in-out;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        h1, p {
+            z-index: 2;
+            position: relative;
+        }
+
+        .bold {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .music-menu-toggle {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            color: white;
+            z-index: 4;
+            background: none;
+            border: none;
+            outline: none;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        .music-controls {
+            display: none;
+            position: fixed;
+            top: 50px;
+            left: 10px;
+            z-index: 3;
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .music-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .music-button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: white;
+            transition: transform 0.2s;
+        }
+
+        .music-button:hover {
+            transform: scale(1.2);
+        }
+
+        .progress-bar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
+            width: 220px;
+        }
+
+        .progress-bar-wrapper {
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .progress-bar {
+            width: 0;
+            height: 100%;
+            background: white;
+            transition: width 0.1s linear;
+        }
+
+        .time-info {
+            font-size: 12px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .current-song {
+            font-size: 16px;
+            color: white;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 80%;
+            max-width: 500px;
+            margin-top: 20px;
+            margin-bottom: 40px;
+            z-index: 2;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 2s ease-in-out;
+            animation-fill-mode: forwards;
+        }
+
+        .button-container a {
+            display: inline-block;
+            width: 100%;
+            height: 50px;
+            background-color: rgba(0, 0, 0, 0.3);
+            color: white;
+            text-align: center;
+            line-height: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+            border: 5px solid;
+            animation: rgb-sync 12s infinite linear;
+            transition: background-color 0.3s ease, transform 0.2s;
+        }
+
+        .button-container a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        @keyframes rgb-sync {
+            0% {
+                border-color: rgb(255, 0, 0);
+                background: radial-gradient(circle, rgba(255, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+            }
+            20% {
+                border-color: rgb(255, 105, 180);
+                background: radial-gradient(circle, rgba(255, 105, 180, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+            }
+            40% {
+                border-color: rgb(255, 165, 0);
+                background: radial-gradient(circle, rgba(255, 165, 0, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+            }
+            60% {
+                border-color: rgb(255, 255, 0);
+                background: radial-gradient(circle, rgba(255, 255, 0, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+            }
+            80% {
+                border-color: rgb(255, 20, 147);
+                background: radial-gradient(circle, rgba(255, 20, 147, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+            }
+            100% {
+                border-color: rgb(255, 0, 0);
+                background: radial-gradient(circle, rgba(255, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+            }
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: white;
+            font-size: 1em;
+            pointer-events: none;
+            z-index: 3;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateX(0) translateY(0); opacity: 1; }
+            100% { transform: translateX(var(--end-x)) translateY(100vh); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <button class="music-menu-toggle" onclick="toggleMenu()">📤</button>
+
+    <div class="music-controls" id="music-controls">
+        <div class="current-song" id="current-song">Premiere_Lemaitre_Higher_feat_Maty_Noyes.mp3</div>
+        <div class="music-buttons">
+            <button class="music-button" onclick="previousTrack()">⏮️</button>
+            <button class="music-button" onclick="toggleMusic()">▶️</button>
+            <button class="music-button" onclick="nextTrack()">⏭️</button>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar-wrapper" onclick="seekTrack(event)">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="time-info">
+                <span id="current-time">0:00</span>
+                <span id="total-time">0:00</span>
+            </div>
+        </div>
+    </div>
+
+    <audio id="music"></audio>
+
+    <div class="container">
+        <img src="banner.gif" alt="Banner" class="banner">
+        <h1>OTOSAKA Bio</h1>
+        <p><strong>Имя:</strong> Мирон</p>
+        <p><strong>Сколько лет:</strong> 15 лет</p>
+        <p><strong>Языки:</strong> Русский, частично Английский</p>
+        <p><strong>Хобби/Описание:</strong> Новичок в мире юзерботов и кодов.</p>
+        <p class="bold">Пока-Пока♡!</p>
+    </div>
+
+    <div class="button-container">
+        <a href="https://m.vk.com/otosaka" target="_blank">VK</a>
+        <a href="https://tofykaria.github.io/" target="_blank">Мой очень интересный сайт :3</a>
+    </div>
+
+    <script>
+        const tracks = ["Premiere_Lemaitre_Higher_feat_Maty_Noyes.mp3", "Shadow Lady Portwave.mp3"];
+        let currentTrackIndex = 0;
+        let isPlaying = false;
+
+        const music = document.getElementById("music");
+        const currentSong = document.getElementById("current-song");
+        const progressBar = document.getElementById("progress-bar");
+        const musicControls = document.getElementById("music-controls");
+        const toggleMenuButton = document.querySelector(".music-menu-toggle");
+        const currentTime = document.getElementById("current-time");
+        const totalTime = document.getElementById("total-time");
+
+        music.src = tracks[currentTrackIndex];
+        currentSong.textContent = tracks[currentTrackIndex];
+
+        music.addEventListener("timeupdate", updateProgressBar);
+        music.addEventListener("loadedmetadata", () => {
+            totalTime.textContent = formatTime(music.duration);
+        });
+
+        function toggleMenu() {
+            const isVisible = musicControls.style.display === "flex";
+            musicControls.style.display = isVisible ? "none" : "flex";
+            toggleMenuButton.textContent = isVisible ? "📤" : "📥";
+        }
+
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+                document.querySelector(".music-buttons button:nth-child(2)").textContent = "▶️";
+            } else {
+                music.play();
+                document.querySelector(".music-buttons button:nth-child(2)").textContent = "⏸️";
+            }
+            isPlaying = !isPlaying;
+        }
+
+        function nextTrack() {
+            currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
+            music.src = tracks[currentTrackIndex];
+            currentSong.textContent = tracks[currentTrackIndex];
+            isPlaying = false;
+            toggleMusic();
+        }
+
+        function previousTrack() {
+            currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+            music.src = tracks[currentTrackIndex];
+            currentSong.textContent = tracks[currentTrackIndex];
+            isPlaying = false;
+            toggleMusic();
+        }
+
+        function updateProgressBar() {
+            const progress = (music.currentTime / music.duration) * 100;
+            progressBar.style.width = `${progress}%`;
+            currentTime.textContent = formatTime(music.currentTime);
+        }
+
+        function seekTrack(event) {
+            const progressContainer = event.currentTarget;
+            const offsetX = event.offsetX;
+            const totalWidth = progressContainer.offsetWidth;
+            const percentage = offsetX / totalWidth;
+            music.currentTime = music.duration * percentage;
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
+        }
+
+        // Snowflake animation
+        const snowflakeCount = 50;
+        const snowContainer = document.createElement('div');
+        document.body.appendChild(snowContainer);
+
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.textContent = '❄';
+            snowflake.className = 'snowflake';
+            snowflake.style.left = `${Math.random() * 100}vw`;
+            snowflake.style.animationDuration = `${Math.random() * 5 + 5}s`;
+            snowflake.style.fontSize = `${Math.random() * 10 + 20}px`;
+            snowflake.style.setProperty('--end-x', `${Math.random() * 200 - 100}px`);
+            snowContainer.appendChild(snowflake);
+
+            snowflake.addEventListener('animationend', () => {
+                snowflake.remove();
+                createSnowflake();
+            });
+        }
+
+        for (let i = 0; i < snowflakeCount; i++) {
+            createSnowflake();
+        }
+    </script>
+</body>
+</html>
